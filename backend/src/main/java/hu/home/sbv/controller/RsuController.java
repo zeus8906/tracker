@@ -17,7 +17,7 @@ public class RsuController {
 
     private BaseService<Rsu> service;
 
-    public RsuController(@Autowired BaseService service) {
+    public RsuController(@Autowired BaseService<Rsu> service) {
         this.service = service;
     }
 

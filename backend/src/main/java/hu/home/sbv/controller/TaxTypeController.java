@@ -16,7 +16,7 @@ public class TaxTypeController {
 
     private BaseService<TaxType> service;
 
-    public TaxTypeController(@Autowired BaseService service) {
+    public TaxTypeController(@Autowired BaseService<TaxType> service) {
         this.service = service;
     }
 
