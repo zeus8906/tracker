@@ -43,7 +43,7 @@ public class TaxTypeController {
     }
 
     @PutMapping("/update")
-    public @ResponseBody TaxType update(TaxType toUpdate){
+    public @ResponseBody TaxType update(@RequestBody TaxType toUpdate){
         return service.update(toUpdate);
     }
 }

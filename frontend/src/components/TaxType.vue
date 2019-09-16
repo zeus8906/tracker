@@ -8,8 +8,8 @@
         <el-table-column prop="percentage" label="Percent" :formatter="percentFormat"></el-table-column>
         <el-table-column label="Operations" width="170">
           <template slot-scope="scope">
-            <el-button size="mini">Edit</el-button>
-            <el-button size="mini" type="danger">Delete</el-button>
+            <el-button size="mini" @click="editType(scope.$index, taxTypes)">Edit</el-button>
+            <el-button size="mini" type="danger" @click="deleteType(scope.$index, taxTypes)">Delete</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -20,13 +20,13 @@
             <el-input v-model="newType.name"></el-input>
           </el-form-item>
           <el-form-item label="Percentage">
-            <el-input-number :precision="1" :step="0.1" :min="0.0" :max="100.0"
+            <el-input-number :precision="1" :step="1.0" :min="0.0" :max="100.0"
                              v-model="newType.percentage"></el-input-number>
           </el-form-item>
         </el-form>
         <span slot="footer" class="dialog-footer">
-          <el-button @click="isAddFormVisible = false">Cancel</el-button>
-          <el-button type="primary" @click="isAddFormVisible = false">Confirm</el-button>
+          <el-button @click="closeForm">Cancel</el-button>
+          <el-button type="primary" @click="submitForm">Confirm</el-button>
         </span>
       </el-dialog>
     </div>
@@ -40,6 +40,7 @@ export default {
     return {
       taxTypes: [],
       isAddFormVisible: false,
+      indexOfUpdate: -1,
       newType: {
         'name': '',
         'percentage': 0.0
@@ -52,6 +53,33 @@ export default {
   methods: {
     percentFormat (row, col, val, index) {
       return val + ' %'
+    },
+    submitForm () {
+      var promise = this.newType.id ? axios.put('/api/tax_type/update', this.newType) : axios.post('/api/tax_type/add', this.newType)
+      promise.then(response => {
+        if (this.indexOfUpdate >= 0) {
+          this.taxTypes[this.indexOfUpdate] = response.data
+        } else {
+          this.taxTypes.push(response.data)
+        }
+        this.closeForm()
+      })
+    },
+    closeForm () {
+      this.newType = {
+        'name': '',
+        'percentage': 0.0
+      }
+      this.indexOfUpdate = -1
+      this.isAddFormVisible = false
+    },
+    deleteType (index, rows) {
+      axios.delete('/api/tax_type/delete/' + rows[index].id).then(response => { response.data && rows.splice(index, 1) })
+    },
+    editType (index, rows) {
+      this.newType = rows[index]
+      this.indexOfUpdate = index
+      this.isAddFormVisible = true
     }
   }
 }
