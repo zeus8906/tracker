@@ -22,7 +22,7 @@ const devWebpackConfig = merge(baseWebpackConfig, {
 
   // these devServer options should be customized in /config/index.js
   devServer: {
-    clientLogLevel: 'warning',
+    clientLogLevel: 'info',
     historyApiFallback: {
       rewrites: [
         { from: /.*/, to: path.posix.join(config.dev.assetsPublicPath, 'index.html') },
@@ -38,7 +38,12 @@ const devWebpackConfig = merge(baseWebpackConfig, {
       ? { warnings: false, errors: true }
       : false,
     publicPath: config.dev.assetsPublicPath,
-    proxy: config.dev.proxyTable,
+    proxy: {
+      '/api': {
+        target: 'http://localhost:8080',
+        changeOrigin: true
+      }
+    },
     quiet: true, // necessary for FriendlyErrorsPlugin
     watchOptions: {
       poll: config.dev.poll,
