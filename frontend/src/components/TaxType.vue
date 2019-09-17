@@ -41,10 +41,7 @@ export default {
       taxTypes: [],
       isAddFormVisible: false,
       indexOfUpdate: -1,
-      newType: {
-        'name': '',
-        'percentage': 0.0
-      }
+      newType: {}
     }
   },
   mounted () {
@@ -58,7 +55,7 @@ export default {
       var promise = this.newType.id ? axios.put('/api/tax_type/update', this.newType) : axios.post('/api/tax_type/add', this.newType)
       promise.then(response => {
         if (this.indexOfUpdate >= 0) {
-          this.taxTypes[this.indexOfUpdate] = response.data
+          this.$set(this.taxTypes, this.indexOfUpdate, response.data)
         } else {
           this.taxTypes.push(response.data)
         }
@@ -66,10 +63,7 @@ export default {
       })
     },
     closeForm () {
-      this.newType = {
-        'name': '',
-        'percentage': 0.0
-      }
+      this.newType = {}
       this.indexOfUpdate = -1
       this.isAddFormVisible = false
     },
