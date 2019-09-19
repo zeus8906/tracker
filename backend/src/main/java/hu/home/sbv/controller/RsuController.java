@@ -3,6 +3,7 @@ package hu.home.sbv.controller;
 import hu.home.sbv.model.Rsu;
 import hu.home.sbv.model.TaxType;
 import hu.home.sbv.service.BaseService;
+import hu.home.sbv.service.RsuService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,9 +16,9 @@ import java.util.List;
 public class RsuController {
     private static final Logger LOG = LoggerFactory.getLogger("RSU Api Controller");
 
-    private BaseService<Rsu> service;
+    private RsuService service;
 
-    public RsuController(@Autowired BaseService<Rsu> service) {
+    public RsuController(@Autowired RsuService service) {
         this.service = service;
     }
 

@@ -2,6 +2,7 @@ package hu.home.sbv.controller;
 
 import hu.home.sbv.model.TaxType;
 import hu.home.sbv.service.BaseService;
+import hu.home.sbv.service.TaxTypeService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,9 +15,9 @@ import java.util.List;
 public class TaxTypeController {
     private static final Logger LOG = LoggerFactory.getLogger("Api Controller");
 
-    private BaseService<TaxType> service;
+    private TaxTypeService service;
 
-    public TaxTypeController(@Autowired BaseService<TaxType> service) {
+    public TaxTypeController(@Autowired TaxTypeService service) {
         this.service = service;
     }
 
