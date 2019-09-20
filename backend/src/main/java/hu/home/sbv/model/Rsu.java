@@ -23,7 +23,7 @@ public class Rsu {
 
     private BigDecimal usdhuf;
 
-    private boolean isTaxPayed;
+    private boolean isTaxPaid;
 
     public long getId() {
         return id;
@@ -66,11 +66,11 @@ public class Rsu {
     }
 
     public boolean isTaxPayed() {
-        return isTaxPayed;
+        return isTaxPaid;
     }
 
-    public void setTaxPayed(boolean taxPayed) {
-        isTaxPayed = taxPayed;
+    public void setTaxPayed(boolean taxPaid) {
+        isTaxPaid = taxPaid;
     }
 
     @Override
@@ -81,7 +81,7 @@ public class Rsu {
                 ", count=" + count +
                 ", value=" + value +
                 ", usdhuf=" + usdhuf +
-                ", isTaxPayed=" + isTaxPayed +
+                ", isTaxPaid=" + isTaxPaid +
                 '}';
     }
 }

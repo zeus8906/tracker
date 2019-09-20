@@ -1,6 +1,6 @@
-# ulti-fe
+# frontend
 
-> Ulti Frontend Module
+> RSU Tracker Frontend Module
 
 ## Build Setup
 

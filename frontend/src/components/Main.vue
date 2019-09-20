@@ -12,8 +12,14 @@
             <h4>Tax types</h4>
             <TaxType></TaxType>
           </el-col>
-          <el-col>
+        </el-row>
+        <el-row :gutter="10">
+          <el-col :span="10">
             <TaxBase></TaxBase>
+          </el-col>
+          <el-col :span="14">
+            <h4>Taxes</h4>
+            <TaxList></TaxList>
           </el-col>
         </el-row>
       </el-main>
@@ -25,13 +31,15 @@
 import TaxType from './TaxType'
 import RSUList from './RSUList'
 import TaxBase from './TaxBase'
+import TaxList from './TaxList'
 
 export default {
   name: 'Main',
   components: {
     RSUList,
     TaxType,
-    TaxBase
+    TaxBase,
+    TaxList
   }
 }
 </script>

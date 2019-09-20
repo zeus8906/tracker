@@ -4,7 +4,7 @@
               :data="rsus"
               slot="No data">
       <el-table-column prop="id" label="Id" width="40"></el-table-column>
-      <el-table-column prop="date" label="Date" width="100"></el-table-column>
+      <el-table-column prop="settleDate" label="Date" width="100" :formatter="dateFormat"></el-table-column>
       <el-table-column prop="count" label="Count"></el-table-column>
       <el-table-column prop="value" label="Value" :formatter="dollarFormat"></el-table-column>
       <el-table-column prop="usdhuf" label="USD to HUF"></el-table-column>
@@ -20,7 +20,7 @@
       <el-form :model="newRSU" label-width="110px" size="mini">
         <el-form-item label="Settlement Day">
           <el-date-picker
-            v-model="newRSU.date"
+            v-model="newRSU.settleDate"
             type="date"
             placeholder="Pick a day">
           </el-date-picker>
@@ -58,6 +58,8 @@
 
 <script>
 import axios from 'axios'
+import moment from 'moment'
+
 export default {
   name: 'RSUList',
   data () {
@@ -74,6 +76,9 @@ export default {
   methods: {
     dollarFormat (row, col, val, index) {
       return '$' + val
+    },
+    dateFormat (row, col, val, index) {
+      return moment(String(val)).format('YYYY-MM-DD')
     },
     submitForm () {
       var promise = this.newRSU.id ? axios.put('/api/rsu/update', this.newRSU)
