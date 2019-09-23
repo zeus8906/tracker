@@ -16,9 +16,9 @@
       </el-table-column>
     </el-table>
     <el-button size="medium" type="primary" @click="isAddFormVisible=true">Add</el-button>
-    <el-dialog title="Add new RSU" :visible.sync="isAddFormVisible" width="40%" center>
-      <el-row :gutter="20">
-        <el-col :span="8">
+    <el-dialog title="Add new RSU" :visible.sync="isAddFormVisible" width="50%" center>
+      <el-row :gutter="200">
+        <el-col :span="10">
       <el-form :model="newRSU" label-width="110px" size="mini">
         <el-form-item label="Settlement Day">
           <el-date-picker
@@ -51,8 +51,9 @@
         </el-form-item>
       </el-form>
       </el-col>
-        <el-col>
-
+        <el-col :span="14">
+          <h4> Earning: {{ newRSU.count * newRSU.value * newRSU.usdhuf }} Ft</h4>
+          <h4> Tax Base ( #{{ newRSU.count }} X ${{ newRSU.value }} X {{ newRSU.usdhuf }} X {{ this.taxBase }}% ) = {{ this.exactTaxBase }} Ft</h4>
         </el-col>
       </el-row>
       <span slot="footer" class="dialog-footer">
@@ -73,7 +74,9 @@ export default {
     return {
       isAddFormVisible: false,
       indexOfUpdate: -1,
-      newRSU: {}
+      newRSU: {
+        'count': 0
+      }
     }
   },
   computed: {
@@ -82,6 +85,9 @@ export default {
     },
     taxBase () {
       return this.$store.getters.getTaxBase
+    },
+    exactTaxBase () {
+      return this.newRSU.count * this.newRSU.value * this.newRSU.usdhuf * (this.taxBase / 100.00)
     }
   },
   mounted () {
@@ -107,7 +113,9 @@ export default {
       })
     },
     closeForm () {
-      this.newRSU = {}
+      this.newRSU = {
+        'count': 0
+      }
       this.indexOfUpdate = -1
       this.isAddFormVisible = false
     },
