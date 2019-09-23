@@ -2,6 +2,7 @@
 node_modules
 **/target
 node/
+backend/src/main/resources/public
 
 # local env files
 .env

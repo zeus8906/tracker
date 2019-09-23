@@ -1,12 +1,12 @@
 <template>
   <el-card border="solid" width="120">
     <div class="el-card__header">
-      <span>Current Tax Base: {{ this.taxBase.current }}%</span>
+      <span>Current Tax Base: {{ this.taxBase }}%</span>
     </div>
     <div class="el-card__body">
-      <el-form :model="taxBase">
+      <el-form :model="form">
         <el-form-item label="New Tax Base">
-          <el-input-number :precision="1" :min="0" :max="100" v-model="taxBase.new"></el-input-number>
+          <el-input-number :precision="1" :min="0" :max="100" v-model="form.newTaxBase"></el-input-number>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="applyNewTaxBase">Apply</el-button>
@@ -22,20 +22,28 @@ export default {
   'name': 'TaxBase',
   data () {
     return {
-      'taxBase': {
-        'current': 0,
-        'new': 0
+      'form': {
+        'newTaxBase': 0
       }
     }
   },
-  mounted () {
-    axios.get('/api/args/tax_base').then(response => { this.taxBase.current = response.data })
+  computed: {
+    taxBase () {
+      return this.$store.getters.getTaxBase
+    }
+  },
+  async mounted () {
+    await this.$store.dispatch('loadTaxBase')
+    this.$set(this.form, 'newTaxBase', this.taxBase)
   },
   methods: {
     applyNewTaxBase () {
-      axios.put('/api/args/tax_base/' + this.taxBase.new).then(response => {
-        this.taxBase.current = response.data
-      })
+      axios.put('/api/args/tax_base/' + this.form.newTaxBase)
+        .then(response => response.data)
+        .then(updated => {
+          this.$store.commit('setTaxBase', updated)
+          this.form.newTaxBase = this.taxBase
+        })
     }
   }
 }
