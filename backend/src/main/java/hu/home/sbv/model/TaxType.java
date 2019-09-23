@@ -23,6 +23,17 @@ public class TaxType {
     @Column(name="percentage")
     private BigDecimal percentage;
 
+    @Column(name="on_sell")
+    private boolean onSell;
+
+    public boolean isOnSell() {
+        return onSell;
+    }
+
+    public void setOnSell(boolean onSell) {
+        this.onSell = onSell;
+    }
+
     public long getId() {
         return id;
     }
@@ -49,10 +60,12 @@ public class TaxType {
 
     @Override
     public String toString() {
-        return "TaxType{" +
-                "id=" + id +
-                ", name='" + name + '\'' +
-                ", percentage=" + percentage +
-                '}';
+        final StringBuffer sb = new StringBuffer("TaxType{");
+        sb.append("id=").append(id);
+        sb.append(", name='").append(name).append('\'');
+        sb.append(", percentage=").append(percentage);
+        sb.append(", onSell=").append(onSell);
+        sb.append('}');
+        return sb.toString();
     }
 }

@@ -6,6 +6,13 @@
         <el-table-column prop="id" label="Id" width="40"></el-table-column>
         <el-table-column prop="name" label="Name"></el-table-column>
         <el-table-column prop="percentage" label="Percent" :formatter="percentFormat"></el-table-column>
+        <el-table-column prop="onSell" label="When Sell?" width="95">
+          <template slot-scope="scope">
+            <el-tag
+              :type="scope.row.onSell ? 'success' : 'danger'"
+              disable-transitions>{{ scope.row.onSell ? 'Yes' : 'No' }}</el-tag>
+          </template>
+        </el-table-column>
         <el-table-column label="Operations" width="170">
           <template slot-scope="scope">
             <el-button size="mini" @click="editType(scope.$index, taxTypes)">Edit</el-button>
@@ -23,6 +30,9 @@
             <el-input-number :precision="1" :step="1.0" :min="0.0" :max="100.0"
                              v-model="newType.percentage"></el-input-number>
           </el-form-item>
+          <el-form-item>
+            <el-checkbox v-model="newType.onSell">Apply on sell</el-checkbox>
+          </el-form-item>
         </el-form>
         <span slot="footer" class="dialog-footer">
           <el-button @click="closeForm">Cancel</el-button>
@@ -38,14 +48,18 @@ export default {
   name: 'TaxType',
   data () {
     return {
-      taxTypes: [],
       isAddFormVisible: false,
       indexOfUpdate: -1,
       newType: {}
     }
   },
+  computed: {
+    taxTypes () {
+      return this.$store.getters.getTaxTypes
+    }
+  },
   mounted () {
-    axios.get('/api/tax_type/get_all').then(response => { this.taxTypes = response.data })
+    this.$store.dispatch('loadTaxTypes')
   },
   methods: {
     percentFormat (row, col, val, index) {
@@ -55,9 +69,9 @@ export default {
       var promise = this.newType.id ? axios.put('/api/tax_type/update', this.newType) : axios.post('/api/tax_type/add', this.newType)
       promise.then(response => {
         if (this.indexOfUpdate >= 0) {
-          this.$set(this.taxTypes, this.indexOfUpdate, response.data)
+          this.$store.commit('updateTaxType', response.data)
         } else {
-          this.taxTypes.push(response.data)
+          this.$store.commit('addTaxType', response.data)
         }
         this.closeForm()
       })
@@ -68,7 +82,10 @@ export default {
       this.isAddFormVisible = false
     },
     deleteType (index, rows) {
-      axios.delete('/api/tax_type/delete/' + rows[index].id).then(response => { response.data && rows.splice(index, 1) })
+      axios.delete('/api/tax_type/delete/' + rows[index].id)
+        .then(response => {
+          response.data && this.$store.commit('deleteTaxType', rows[index].id)
+        })
     },
     editType (index, rows) {
       this.newType = rows[index]
@@ -80,5 +97,7 @@ export default {
 </script>
 
 <style>
-
+.el-table .cell {
+  text-align: center;
+}
 </style>

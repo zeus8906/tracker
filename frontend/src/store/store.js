@@ -21,7 +21,7 @@ export default new Vuex.Store({
     getTaxBase: state => {
       return state.taxBase
     },
-    taxTypes: state => {
+    getTaxTypes: state => {
       return state.taxTypes
     }
   },
@@ -40,6 +40,18 @@ export default new Vuex.Store({
     },
     setTaxBase (state, newTaxBase) {
       state.taxBase = newTaxBase
+    },
+    setTaxTypes (state, taxTypes) {
+      state.taxTypes = taxTypes
+    },
+    addTaxType (state, newTaxType) {
+      state.taxTypes.push(newTaxType)
+    },
+    deleteTaxType (state, taxTypeId) {
+      state.taxTypes = state.taxTypes.filter(type => type.id !== parseInt(taxTypeId))
+    },
+    updateTaxType (state, updated) {
+      state.taxTypes.map(type => { return type.id === updated.id ? updated : type })
     }
   },
   actions: {
@@ -49,6 +61,9 @@ export default new Vuex.Store({
     async loadTaxBase ({ commit }) {
       const resp = await axios.get('/api/args/tax_base')
       commit('setTaxBase', resp.data)
+    },
+    loadTaxTypes ({ commit }) {
+      axios.get('/api/tax_type/get_all').then(response => response.data).then(taxTypes => { commit('setTaxTypes', taxTypes) })
     }
   }
 })

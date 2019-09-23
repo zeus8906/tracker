@@ -54,6 +54,12 @@
         <el-col :span="14">
           <h4> Earning: {{ newRSU.count * newRSU.value * newRSU.usdhuf }} Ft</h4>
           <h4> Tax Base ( #{{ newRSU.count }} X ${{ newRSU.value }} X {{ newRSU.usdhuf }} X {{ this.taxBase }}% ) = {{ this.exactTaxBase }} Ft</h4>
+          <h4> Taxes: </h4>
+          <el-table :data="taxTypes">
+            <el-table-column prop="name" label="Type"></el-table-column>
+            <el-table-column prop="percentage" label="Percentage"></el-table-column>
+            <el-table-column prop="percentage" label="Value" :formatter="countTaxType"></el-table-column>
+          </el-table>
         </el-col>
       </el-row>
       <span slot="footer" class="dialog-footer">
@@ -86,6 +92,9 @@ export default {
     taxBase () {
       return this.$store.getters.getTaxBase
     },
+    taxTypes () {
+      return this.$store.getters.getTaxTypes
+    },
     exactTaxBase () {
       return this.newRSU.count * this.newRSU.value * this.newRSU.usdhuf * (this.taxBase / 100.00)
     }
@@ -96,6 +105,9 @@ export default {
   methods: {
     dollarFormat (row, col, val, index) {
       return '$' + val
+    },
+    countTaxType (row, col, val, index) {
+      return this.exactTaxBase * val / 100.0 + ' Ft'
     },
     dateFormat (row, col, val, index) {
       return moment(String(val)).format('YYYY-MM-DD')
