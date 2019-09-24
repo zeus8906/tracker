@@ -52,12 +52,12 @@
       </el-form>
       </el-col>
         <el-col :span="14">
-          <h4> Earning: {{ newRSU.count * newRSU.value * newRSU.usdhuf }} Ft</h4>
-          <h4> Tax Base ( #{{ newRSU.count }} X ${{ newRSU.value }} X {{ newRSU.usdhuf }} X {{ this.taxBase }}% ) = {{ this.exactTaxBase }} Ft</h4>
+          <h4> Earning: {{ formatPrice(newRSU.count * newRSU.value * newRSU.usdhuf) }} Ft</h4>
+          <h4> Tax Base ( #{{ newRSU.count }} X ${{ newRSU.value }} X {{ newRSU.usdhuf }} X {{ this.taxBase }}% ) = {{ formatPrice(this.exactTaxBase) }} Ft</h4>
           <h4> Taxes: </h4>
           <el-table :data="taxTypes">
             <el-table-column prop="name" label="Type"></el-table-column>
-            <el-table-column prop="percentage" label="Percentage"></el-table-column>
+            <el-table-column prop="percentage" label="Percentage" :formatter="percentFormat"></el-table-column>
             <el-table-column prop="percentage" label="Value" :formatter="countTaxType"></el-table-column>
           </el-table>
         </el-col>
@@ -106,8 +106,15 @@ export default {
     dollarFormat (row, col, val, index) {
       return '$' + val
     },
+    percentFormat (row, col, val, index) {
+      return val + '%'
+    },
     countTaxType (row, col, val, index) {
-      return this.exactTaxBase * val / 100.0 + ' Ft'
+      return this.formatPrice(this.exactTaxBase * val / 100.0) + ' Ft'
+    },
+    formatPrice (value) {
+      let val = (value / 1).toFixed(2).replace('.', ',')
+      return val.toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.')
     },
     dateFormat (row, col, val, index) {
       return moment(String(val)).format('YYYY-MM-DD')
