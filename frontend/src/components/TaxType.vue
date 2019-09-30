@@ -5,7 +5,11 @@
                 slot="No data">
         <el-table-column prop="id" label="Id" width="40"></el-table-column>
         <el-table-column prop="name" label="Name"></el-table-column>
-        <el-table-column prop="percentage" label="Percent" :formatter="percentFormat"></el-table-column>
+        <el-table-column label="Percent">
+          <template slot-scope="scope">
+            {{ scope.row.percentage | percentFormatter }}
+          </template>
+        </el-table-column>
         <el-table-column prop="onSell" label="When Sell?" width="95">
           <template slot-scope="scope">
             <el-tag
@@ -43,7 +47,8 @@
 </template>
 
 <script>
-import axios from 'axios'
+import repo from '../repositories/TaxTypeRepository'
+
 export default {
   name: 'TaxType',
   data () {
@@ -55,37 +60,39 @@ export default {
   },
   computed: {
     taxTypes () {
-      return this.$store.getters.getTaxTypes
+      return this.$store.getters['TaxTypeStore/getTaxTypes']
     }
   },
-  mounted () {
-    this.$store.dispatch('loadTaxTypes')
+  async mounted () {
+    const types = await repo.getAll().catch(error => {
+      this.$message(error.message)
+    })
+    this.$store.commit('TaxTypeStore/setTaxTypes', types)
   },
   methods: {
-    percentFormat (row, col, val, index) {
-      return val + ' %'
-    },
-    submitForm () {
-      var promise = this.newType.id ? axios.put('/api/tax_type/update', this.newType) : axios.post('/api/tax_type/add', this.newType)
-      promise.then(response => {
+    async submitForm () {
+      try {
+        const update = this.newType.id ? await repo.update(this.newType) : await repo.save(this.newType)
         if (this.indexOfUpdate >= 0) {
-          this.$store.commit('updateTaxType', response.data)
+          this.$store.commit('TaxTypeStore/updateTaxType', update)
         } else {
-          this.$store.commit('addTaxType', response.data)
+          this.$store.commit('TaxTypeStore/addTaxType', update)
         }
-        this.closeForm()
-      })
+      } catch (error) {
+        this.$message(error.message)
+      }
+      this.closeForm()
     },
     closeForm () {
       this.newType = {}
       this.indexOfUpdate = -1
       this.isAddFormVisible = false
     },
-    deleteType (index, rows) {
-      axios.delete('/api/tax_type/delete/' + rows[index].id)
-        .then(response => {
-          response.data && this.$store.commit('deleteTaxType', rows[index].id)
-        })
+    async deleteType (index, rows) {
+      const isDeleted = await repo.delete(rows[index].id).catch(
+        error => this.$message(error.message)
+      )
+      isDeleted && this.$store.commit('TaxTypeStore/deleteTaxType', rows[index].id)
     },
     editType (index, rows) {
       this.newType = rows[index]

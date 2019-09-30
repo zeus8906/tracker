@@ -7,9 +7,9 @@ import ElementUI from 'element-ui'
 import lang from 'element-ui/lib/locale/lang/en'
 import locale from 'element-ui/lib/locale'
 import store from './store/store'
+import './utils/formatters'
 
 locale.use(lang)
-Vue.config.productionTip = false
 
 Vue.use(ElementUI)
 

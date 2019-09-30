@@ -29,7 +29,7 @@
 
 <script>
 import TaxType from './TaxType'
-import RSUList from './RSUList'
+import RSUList from './RSU/RSUList'
 import TaxBase from './TaxBase'
 import TaxList from './TaxList'
 
@@ -40,17 +40,20 @@ export default {
     TaxType,
     TaxBase,
     TaxList
+  },
+  errorCaptured (err, vm, info) {
+    this.$message.warning(err.message)
   }
 }
 </script>
 
 <style>
 .el-row {
-    margin-bottom: 20px;
-    &:last-child {
-      margin-bottom: 0;
-    }
+  margin-bottom: 20px;
+  &:last-child {
+    margin-bottom: 0;
   }
+}
 h4 {
   margin: 0px;
 }

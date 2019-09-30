@@ -1,7 +1,7 @@
 <template>
   <el-card border="solid" width="120">
     <div class="el-card__header">
-      <span>Current Tax Base: {{ this.taxBase }}%</span>
+      <span>Current Tax Base: {{ this.taxBase | percentFormatter }}</span>
     </div>
     <div class="el-card__body">
       <el-form :model="form">
@@ -17,7 +17,7 @@
 </template>
 
 <script>
-import axios from 'axios'
+import repo from '../repositories/TaxBaseRepository'
 export default {
   'name': 'TaxBase',
   data () {
@@ -29,21 +29,22 @@ export default {
   },
   computed: {
     taxBase () {
-      return this.$store.getters.getTaxBase
+      return this.$store.getters['TaxBaseStore/getTaxBase']
     }
   },
   async mounted () {
-    await this.$store.dispatch('loadTaxBase')
-    this.$set(this.form, 'newTaxBase', this.taxBase)
+    const taxBase = await repo.get().catch(error => {
+      this.$message(error.message)
+    })
+    this.$store.commit('TaxBaseStore/setTaxBase', taxBase)
   },
   methods: {
-    applyNewTaxBase () {
-      axios.put('/api/args/tax_base/' + this.form.newTaxBase)
-        .then(response => response.data)
-        .then(updated => {
-          this.$store.commit('setTaxBase', updated)
-          this.form.newTaxBase = this.taxBase
-        })
+    async applyNewTaxBase () {
+      const updated = await repo.update(this.form.newTaxBase).catch(
+        error => this.$message(error.message)
+      )
+      this.$store.commit('TaxBaseStore/setTaxBase', updated)
+      this.form.newTaxBase = this.taxBase
     }
   }
 }

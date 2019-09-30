@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import axios from 'axios'
+// import axios from 'axios'
 export default {
   name: 'TaxList',
   data () {
@@ -22,7 +22,7 @@ export default {
     }
   },
   mounted () {
-    axios.get('/api/tax/get_all').then(response => { this.taxes = response.data })
+    // axios.get('/api/tax/get_all').then(response => { this.taxes = response.data })
   },
   methods: {
     hufFormat (row, col, val, index) {
