@@ -38,7 +38,7 @@
       <h4> Earning: {{ newRSU.count * newRSU.value * newRSU.usdhuf | currencyFormatter }} Ft</h4>
       <h4> Tax Base ( #{{ newRSU.count }} X ${{ newRSU.value }} X {{ newRSU.usdhuf }} X {{ this.taxBase }}% ) = {{ this.exactTaxBase | currencyFormatter }} Ft</h4>
       <h4> Taxes: </h4>
-      <el-table :data="taxTypes">
+      <el-table show-summary :summary-method="getSummaries" :data="taxTypes">
         <el-table-column prop="name" label="Type"></el-table-column>
         <el-table-column label="Percentage">
           <template slot-scope="scope">
@@ -102,6 +102,17 @@ export default {
     closeForm () {
       this.$store.commit('RSUStore/clearNewRSU')
       this.$store.commit('RSUStore/setAddFormVisible', false)
+    },
+    getSummaries (param) {
+      const { data } = param
+      console.log(data)
+      const sums = []
+      sums[0] = 'Total'
+      sums[1] = data.map(item => Number(item['percentage'])).reduce((a, b) => a + b, 0)
+      sums[1] = this.$options.filters.percentFormatter(sums[1])
+      sums[2] = data.map(item => this.countTaxType(Number(item['percentage']))).reduce((a, b) => a + b, 0)
+      sums[2] = this.$options.filters.currencyFormatter(sums[2]) + ' Ft'
+      return sums
     }
   }
 }
