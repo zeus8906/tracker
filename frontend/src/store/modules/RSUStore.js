@@ -23,7 +23,7 @@ export const mutations = {
     state.rsus = state.rsus.filter(rsu => rsu.id !== parseInt(rsuId))
   },
   updateRsu (state, updated) {
-    state.rsus.map(rsu => { return rsu.id === updated.id ? updated : rsu })
+    state.rsu = state.rsus.map(rsu => { return rsu.id === updated.id ? updated : rsu })
   },
   setAddFormVisible (state, visible) {
     state.isAddFormVisible = visible

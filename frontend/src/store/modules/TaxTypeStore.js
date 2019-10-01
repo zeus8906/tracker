@@ -17,6 +17,6 @@ export const mutations = {
     state.taxTypes = state.taxTypes.filter(type => type.id !== parseInt(taxTypeId))
   },
   updateTaxType (state, updated) {
-    state.taxTypes.map(type => { return type.id === updated.id ? updated : type })
+    state.taxTypes = state.taxTypes.map(type => { return type.id === updated.id ? updated : type })
   }
 }
