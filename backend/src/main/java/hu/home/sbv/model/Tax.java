@@ -76,4 +76,17 @@ public class Tax {
     public void setDueDate(Date dueDate) {
         this.dueDate = dueDate;
     }
+
+    @Override
+    public String toString() {
+        final StringBuffer sb = new StringBuffer("Tax{");
+        sb.append("id=").append(id);
+        sb.append(", taxType=").append(taxType);
+        sb.append(", value=").append(value);
+        sb.append(", isPaid=").append(isPaid);
+        sb.append(", rsu=").append(rsu);
+        sb.append(", dueDate=").append(dueDate);
+        sb.append('}');
+        return sb.toString();
+    }
 }

@@ -23,7 +23,7 @@ public class TaxController {
     @PostMapping("/add")
     public @ResponseBody
     Tax add(@RequestBody Tax toAdd){
-        LOG.info("Adding TaxType: {}", toAdd);
+        LOG.info("Adding Tax: {}", toAdd);
         return service.add(toAdd);
     }
 
@@ -46,6 +46,7 @@ public class TaxController {
 
     @PutMapping("/update")
     public @ResponseBody Tax update(@RequestBody Tax toUpdate){
+        LOG.info("Update Tax: {}", toUpdate);
         return service.update(toUpdate);
     }
 

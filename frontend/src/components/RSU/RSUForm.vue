@@ -104,26 +104,44 @@ export default {
         const updated = this.newRSU.id ? await repo.update(this.newRSU) : await repo.save(this.newRSU)
         if (this.newRSU.id && this.newRSU.id >= 0) {
           this.$store.commit('RSUStore/updateRsu', updated)
-          this.saveNewTaxes(updated.id, true)
+          this.saveNewTaxes(updated, true)
         } else {
           this.$store.commit('RSUStore/addRsu', updated)
-          this.saveNewTaxes(updated.id, false)
+          this.saveNewTaxes(updated, false)
         }
       } catch (error) {
         this.$message.warning(error.message)
       }
       this.closeForm()
     },
-    async saveNewTaxes (rsuId, isUpdate) {
-      this.newTaxes.forEach(newTax => {
-        newTax.rsu = rsuId
-        const updated = isUpdate ? taxRepo.update(newTax) : taxRepo.save(newTax)
-        if (isUpdate) {
-          this.$store.commit('TaxStore/updateTax', updated)
+    saveNewTaxes (rsu, isUpdate) {
+      const taxesToSave = isUpdate ? this.recalculateTaxes(this.$store.getters['TaxStore/getTaxesByRsu'](rsu.id), this.newTaxes) : this.newTaxes
+      try {
+        taxesToSave.forEach(async (newTax) => {
+          newTax.rsu = rsu
+          const updated = isUpdate ? await taxRepo.update(newTax) : await taxRepo.save(newTax)
+          if (isUpdate) {
+            updated && this.$store.commit('TaxStore/updateTax', updated)
+          } else {
+            updated && this.$store.commit('TaxStore/addTax', updated)
+          }
+        })
+      } catch (e) {
+        this.$message.warning(e.message)
+      }
+    },
+    recalculateTaxes (existingTaxes, updates) {
+      const result = []
+      existingTaxes.forEach(tax => {
+        const currUpdate = updates.filter(item => item.taxType.id === tax.taxType.id)
+        if (currUpdate) {
+          currUpdate[0].id = tax.id
+          result.push(currUpdate[0])
         } else {
-          this.$store.commit('TaxStore/addTax', updated)
+          result.push(tax)
         }
       })
+      return result
     },
     closeForm () {
       this.$store.commit('RSUStore/clearNewRSU')
@@ -131,7 +149,6 @@ export default {
     },
     getSummaries (param) {
       const { data } = param
-      console.log(data)
       const sums = []
       sums[0] = 'Total'
       sums[1] = data.map(item => Number(item['taxType']['percentage'])).reduce((a, b) => a + b, 0)

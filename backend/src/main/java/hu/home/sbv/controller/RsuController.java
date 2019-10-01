@@ -25,7 +25,7 @@ public class RsuController {
     @PostMapping("/add")
     public @ResponseBody
     Rsu add(@RequestBody Rsu toAdd){
-        LOG.info("Adding TaxType: {}", toAdd);
+        LOG.info("Adding RSU: {}", toAdd);
         return service.add(toAdd);
     }
 
@@ -47,7 +47,8 @@ public class RsuController {
     }
 
     @PutMapping("/update")
-    public @ResponseBody Rsu update(Rsu toUpdate){
+    public @ResponseBody Rsu update(@RequestBody Rsu toUpdate){
+        LOG.info("Updating RSU: {}", toUpdate);
         return service.update(toUpdate);
     }
 }

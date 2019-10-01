@@ -3,11 +3,20 @@
     <el-table height="200" stripe border
               :data="taxes"
               slot="No data">
-      <el-table-column prop="rsu" label="Rsu Id"></el-table-column>
+      <el-table-column prop="rsu.id" label="Rsu Id"></el-table-column>
       <el-table-column prop="date" label="Due Date"></el-table-column>
       <el-table-column prop="taxType.name" label="Type"></el-table-column>
-      <el-table-column prop="value" label="Value" :formatter="hufFormat"></el-table-column>
-      <el-table-column prop="isPaid" label="Status"></el-table-column>
+      <el-table-column label="Value">
+        <template slot-scope="scope">
+          {{ scope.row.value | currencyFormatter }}
+        </template>
+      </el-table-column>
+      <el-table-column prop="paid" label="Status">
+        <template slot-scope="scope">
+          <el-tag v-if="scope.row.paid" :type="success" disable-transitions> Paid</el-tag>
+          <el-button v-else>Pay Tax</el-button>
+        </template>
+      </el-table-column>
     </el-table>
   </div>
 </template>
