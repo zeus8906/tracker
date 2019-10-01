@@ -13,16 +13,22 @@
 </template>
 
 <script>
-// import axios from 'axios'
+import repo from '../repositories/TaxRepository'
+
 export default {
   name: 'TaxList',
-  data () {
-    return {
-      taxes: []
+  computed: {
+    taxes () {
+      return this.$store.getters['TaxStore/getTaxes']
     }
   },
-  mounted () {
-    // axios.get('/api/tax/get_all').then(response => { this.taxes = response.data })
+  async mounted () {
+    try {
+      const loaded = await repo.getAll()
+      this.$store.commit('TaxStore/setTaxes', loaded)
+    } catch (e) {
+      this.$message.warning(e.message)
+    }
   },
   methods: {
     hufFormat (row, col, val, index) {

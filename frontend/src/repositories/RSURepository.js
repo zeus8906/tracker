@@ -8,7 +8,7 @@ export default {
       .then(response => response.data)
   },
   update (payload) {
-    return axios.put(baseUrl + 'update', payload)
+    return axios.put(baseUrl + '/update', payload)
       .then(response => response.data)
   },
   save (payload) {

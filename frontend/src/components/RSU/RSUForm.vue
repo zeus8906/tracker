@@ -38,16 +38,16 @@
       <h4> Earning: {{ newRSU.count * newRSU.value * newRSU.usdhuf | currencyFormatter }} Ft</h4>
       <h4> Tax Base ( #{{ newRSU.count }} X ${{ newRSU.value }} X {{ newRSU.usdhuf }} X {{ this.taxBase }}% ) = {{ this.exactTaxBase | currencyFormatter }} Ft</h4>
       <h4> Taxes: </h4>
-      <el-table show-summary :summary-method="getSummaries" :data="taxTypes">
+      <el-table show-summary :summary-method="getSummaries" :data="newTaxes">
         <el-table-column prop="name" label="Type"></el-table-column>
         <el-table-column label="Percentage">
           <template slot-scope="scope">
-            {{ scope.row.percentage | percentFormatter }}
+            {{ scope.row.taxType.percentage | percentFormatter }}
           </template>
         </el-table-column>
         <el-table-column label="Value">
           <template slot-scope="scope">
-            {{ countTaxType(scope.row.percentage) | currencyFormatter }} Ft
+            {{ scope.row.value | currencyFormatter }} Ft
           </template>
         </el-table-column>
       </el-table>
@@ -62,6 +62,7 @@
 
 <script>
 import repo from '../../repositories/RSURepository'
+import taxRepo from '../../repositories/TaxRepository'
 
 export default {
   name: 'RSUForm',
@@ -80,6 +81,18 @@ export default {
     },
     newRSU () {
       return this.$store.getters['RSUStore/getNewRSU']
+    },
+    newTaxes () {
+      const taxes = []
+      this.taxTypes.forEach(taxType => {
+        taxes.push({
+          'name': taxType.name,
+          'taxType': taxType,
+          'value': this.countTaxType(taxType.percentage),
+          'dueDate': this.newRSU.settleDate
+        })
+      })
+      return taxes
     }
   },
   methods: {
@@ -91,13 +104,26 @@ export default {
         const updated = this.newRSU.id ? await repo.update(this.newRSU) : await repo.save(this.newRSU)
         if (this.newRSU.id && this.newRSU.id >= 0) {
           this.$store.commit('RSUStore/updateRsu', updated)
+          this.saveNewTaxes(updated.id, true)
         } else {
           this.$store.commit('RSUStore/addRsu', updated)
+          this.saveNewTaxes(updated.id, false)
         }
       } catch (error) {
         this.$message.warning(error.message)
       }
       this.closeForm()
+    },
+    async saveNewTaxes (rsuId, isUpdate) {
+      this.newTaxes.forEach(newTax => {
+        newTax.rsu = rsuId
+        const updated = isUpdate ? taxRepo.update(newTax) : taxRepo.save(newTax)
+        if (isUpdate) {
+          this.$store.commit('TaxStore/updateTax', updated)
+        } else {
+          this.$store.commit('TaxStore/addTax', updated)
+        }
+      })
     },
     closeForm () {
       this.$store.commit('RSUStore/clearNewRSU')
@@ -108,9 +134,9 @@ export default {
       console.log(data)
       const sums = []
       sums[0] = 'Total'
-      sums[1] = data.map(item => Number(item['percentage'])).reduce((a, b) => a + b, 0)
+      sums[1] = data.map(item => Number(item['taxType']['percentage'])).reduce((a, b) => a + b, 0)
       sums[1] = this.$options.filters.percentFormatter(sums[1])
-      sums[2] = data.map(item => this.countTaxType(Number(item['percentage']))).reduce((a, b) => a + b, 0)
+      sums[2] = data.map(item => Number(item['value'])).reduce((a, b) => a + b, 0)
       sums[2] = this.$options.filters.currencyFormatter(sums[2]) + ' Ft'
       return sums
     }
