@@ -37,6 +37,7 @@ export default {
       this.$message(error.message)
     })
     this.$store.commit('TaxBaseStore/setTaxBase', taxBase)
+    this.form.newTaxBase = taxBase
   },
   methods: {
     async applyNewTaxBase () {

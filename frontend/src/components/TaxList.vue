@@ -4,7 +4,11 @@
               :data="taxes"
               slot="No data">
       <el-table-column prop="rsu.id" label="Rsu Id"></el-table-column>
-      <el-table-column prop="date" label="Due Date"></el-table-column>
+      <el-table-column label="Due Date">
+        <template slot-scope="scope">
+          {{ scope.row.dueDate | dateFormatter }}
+        </template>
+      </el-table-column>
       <el-table-column prop="taxType.name" label="Type"></el-table-column>
       <el-table-column label="Value">
         <template slot-scope="scope">

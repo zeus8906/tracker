@@ -16,7 +16,7 @@ import java.util.Collection;
 public interface ArgsRepo extends org.springframework.data.repository.Repository<Args, String> {
 
     @Query("SELECT value FROM args a WHERE a.key='TaxBase'")
-    Collection<String> getTaxBase();
+    String getTaxBase();
 
     @Modifying
     @Query(value = "UPDATE args a SET a.value= ? WHERE a.key='TaxBase'", nativeQuery = true)
