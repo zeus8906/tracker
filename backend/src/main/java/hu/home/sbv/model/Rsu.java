@@ -1,11 +1,9 @@
 package hu.home.sbv.model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name="rsus")
@@ -24,6 +22,11 @@ public class Rsu {
     private BigDecimal usdhuf;
 
     private boolean isTaxPaid;
+
+    private boolean isSoldOut;
+
+    @OneToMany(mappedBy = "source")
+    private List<RsuSell> sells;
 
     public long getId() {
         return id;
@@ -65,23 +68,34 @@ public class Rsu {
         this.usdhuf = usdhuf;
     }
 
-    public boolean isTaxPayed() {
+    public boolean isTaxPaid() {
         return isTaxPaid;
     }
 
-    public void setTaxPayed(boolean taxPaid) {
+    public void setTaxPaid(boolean taxPaid) {
         isTaxPaid = taxPaid;
+    }
+
+    public boolean isSoldOut() {
+        return isSoldOut;
+    }
+
+    public void setSoldOut(boolean soldOut) {
+        isSoldOut = soldOut;
     }
 
     @Override
     public String toString() {
-        return "Rsu{" +
-                "id=" + id +
-                ", settleDate=" + settleDate +
-                ", count=" + count +
-                ", value=" + value +
-                ", usdhuf=" + usdhuf +
-                ", isTaxPaid=" + isTaxPaid +
-                '}';
+        final StringBuffer sb = new StringBuffer("Rsu{");
+        sb.append("id=").append(id);
+        sb.append(", settleDate=").append(settleDate);
+        sb.append(", count=").append(count);
+        sb.append(", value=").append(value);
+        sb.append(", usdhuf=").append(usdhuf);
+        sb.append(", isTaxPaid=").append(isTaxPaid);
+        sb.append(", isSoldOut=").append(isSoldOut);
+        sb.append(", sells=").append(sells);
+        sb.append('}');
+        return sb.toString();
     }
 }

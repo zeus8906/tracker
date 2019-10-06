@@ -14,4 +14,5 @@ public class RsuService extends BaseService<Rsu, Long> {
     public RsuService(@Autowired RsuRepo repo) {
         super(repo);
     }
+
 }

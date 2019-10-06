@@ -39,10 +39,10 @@ public class TaxService extends BaseService<Tax, Long> {
     private Date calculateDueDate(Date settleDate) {
         LocalDate date = settleDate.toInstant().atZone(ZoneId.of("Europe/Budapest")).toLocalDate();
         return Date.from(date.plusMonths(1)
-                        .withDayOfMonth(12).atStartOfDay().toInstant(ZoneOffset.UTC));
+                .withDayOfMonth(12).atStartOfDay().toInstant(ZoneOffset.UTC));
     }
 
-    private List<Tax> createTaxesForRSUVest(Rsu vested){
+    private List<Tax> createTaxesForRSUVest(Rsu vested) {
         List<Tax> vestTaxes = new ArrayList<>();
         BigDecimal taxBase = new BigDecimal(argsRepo.getTaxBase());
         taxTypeService.getAll().stream().forEach(taxType -> {
@@ -65,4 +65,23 @@ public class TaxService extends BaseService<Tax, Long> {
                 .multiply(taxType.getPercentage()
                         .divide(new BigDecimal(100)));
     }
+
+    private List<Tax> createTaxesForRSUSell(Rsu vested) {
+        List<Tax> sellTaxes = new ArrayList<>();
+        BigDecimal taxBase = new BigDecimal(argsRepo.getTaxBase());
+        taxTypeService.getAll()
+                .stream()
+                .filter(type -> type.isOnSell())
+                .forEach(taxType -> {
+                    final Tax newTax = new Tax();
+                    newTax.setDueDate(calculateDueDate(vested.getSettleDate()));
+                    newTax.setRsu(vested);
+                    newTax.setValue(calculateTaxValue(vested, taxBase, taxType));
+                    newTax.setPaid(false);
+                    newTax.setTaxType(taxType);
+                    sellTaxes.add(newTax);
+                });
+        return sellTaxes;
+    }
+
 }
