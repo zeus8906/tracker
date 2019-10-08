@@ -99,36 +99,19 @@ export default {
     countTaxType (val) {
       return this.exactTaxBase * val / 100.0
     },
-    async submitForm () {
+    submitForm: async function () {
       try {
         const updated = this.newRSU.id ? await repo.update(this.newRSU) : await repo.save(this.newRSU)
         if (this.newRSU.id && this.newRSU.id >= 0) {
           this.$store.commit('RSUStore/updateRsu', updated)
-          this.saveNewTaxes(updated, true)
         } else {
           this.$store.commit('RSUStore/addRsu', updated)
-          this.saveNewTaxes(updated, false)
         }
-      } catch (error) {
-        this.$message.warning(error.message)
+      } catch ({message}) {
+        this.$message.warning(message)
       }
+      this.$store.commit('TaxStore/setTaxes', await taxRepo.getAll())
       this.closeForm()
-    },
-    saveNewTaxes (rsu, isUpdate) {
-      const taxesToSave = isUpdate ? this.recalculateTaxes(this.$store.getters['TaxStore/getTaxesByRsu'](rsu.id), this.newTaxes) : this.newTaxes
-      try {
-        taxesToSave.forEach(async (newTax) => {
-          newTax.rsu = rsu
-          const updated = isUpdate ? await taxRepo.update(newTax) : await taxRepo.save(newTax)
-          if (isUpdate) {
-            updated && this.$store.commit('TaxStore/updateTax', updated)
-          } else {
-            updated && this.$store.commit('TaxStore/addTax', updated)
-          }
-        })
-      } catch (e) {
-        this.$message.warning(e.message)
-      }
     },
     recalculateTaxes (existingTaxes, updates) {
       const result = []

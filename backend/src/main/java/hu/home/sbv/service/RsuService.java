@@ -11,8 +11,30 @@ import java.util.List;
 @Service
 public class RsuService extends BaseService<Rsu, Long> {
 
-    public RsuService(@Autowired RsuRepo repo) {
+    private final TaxService taxService;
+
+    public RsuService(@Autowired RsuRepo repo, @Autowired TaxService taxService) {
         super(repo);
+        this.taxService = taxService;
     }
 
+    @Override
+    public Rsu add(Rsu toAdd){
+        final Rsu saved = super.add(toAdd);
+        taxService.saveTaxesForNewRsu(saved);
+        return saved;
+    }
+
+    @Override
+    public Rsu update(Rsu toUpdate){
+        final Rsu updated = super.update(toUpdate);
+        taxService.updateTaxesForRsu(updated);
+        return updated;
+    }
+
+    @Override
+    public void delete(Long toDelete){
+      super.delete(toDelete);
+      taxService.deleteTaxesForRsu(toDelete);
+    }
 }
