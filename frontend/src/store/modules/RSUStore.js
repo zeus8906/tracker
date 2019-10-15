@@ -3,13 +3,15 @@ export const state = {
   isAddFormVisible: false,
   newRSU: {
     count: 0
-  }
+  },
+  isRsuSellVisible: false
 }
 
 export const getters = {
   getRsus: state => state.rsus,
   isAddFormVisible: state => state.isAddFormVisible,
-  getNewRSU: state => state.newRSU
+  getNewRSU: state => state.newRSU,
+  isRsuSellVisible: state => state.isRsuSellVisible
 }
 
 export const mutations = {
@@ -35,5 +37,8 @@ export const mutations = {
   },
   setNewRSU (state, update) {
     state.newRSU = update
+  },
+  setRsuSellVisible (state, visible) {
+    state.isRsuSellVisible = visible
   }
 }

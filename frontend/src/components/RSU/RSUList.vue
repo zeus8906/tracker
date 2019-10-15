@@ -24,17 +24,20 @@
       </el-table-column>
     </el-table>
     <el-button size="medium" type="primary" @click="openForm">Add</el-button>
+    <el-button size="medium" type="warning" @click="openSelling">Sell</el-button>
     <RSUForm></RSUForm>
+    <RSUSell></RSUSell>
   </div>
 </template>
 
 <script>
 import RSUForm from './RSUForm'
 import repo from '../../repositories/RSURepository'
+import RSUSell from './RSUSell'
 
 export default {
   name: 'RSUList',
-  components: {RSUForm},
+  components: {RSUSell, RSUForm},
   computed: {
     rsus () {
       return this.$store.getters['RSUStore/getRsus']
@@ -59,6 +62,9 @@ export default {
     },
     openForm () {
       this.$store.commit('RSUStore/setAddFormVisible', true)
+    },
+    openSelling () {
+      this.$store.commit('RSUStore/setRsuSellVisible', true)
     }
   }
 }
