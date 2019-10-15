@@ -1,5 +1,5 @@
 <template>
-<el-dialog title="Add new RSU" :visible.sync="isAddFormVisible" width="50%" center>
+<el-dialog title="Add new RSU" :visible="isAddFormVisible" width="50%" center @close="closeForm">
   <el-row :gutter="200">
     <el-col :span="10">
       <el-form :model="newRSU" label-width="110px" size="mini">

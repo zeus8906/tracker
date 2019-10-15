@@ -3,10 +3,14 @@
     <el-row :gutter="20">
       <el-col :span="20">
         <el-form :model="transaction">
-          <el-form-item >
-            <el-input-number v-model="transaction.count" :min="0" label="Count"></el-input-number>
-            <el-input-number v-model="transaction.value" :min="0" :precision="2" label="Value"></el-input-number>
-            <el-input-number v-model="transaction.usdhuf" :min="0" :precision="2" label="USD-HUF"></el-input-number>
+          <el-form-item label="Count">
+            <el-input-number v-model="transaction.count" :min="0"></el-input-number>
+          </el-form-item>
+          <el-form-item label="Value">
+            <el-input-number v-model="transaction.value" :min="0" :precision="2"></el-input-number>
+        </el-form-item>
+          <el-form-item label="USD-HUF">
+            <el-input-number v-model="transaction.usdhuf" :min="0" :precision="2"></el-input-number>
           </el-form-item>
         </el-form>
       </el-col>
