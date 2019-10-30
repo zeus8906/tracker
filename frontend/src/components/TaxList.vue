@@ -17,8 +17,8 @@
       </el-table-column>
       <el-table-column prop="paid" label="Status">
         <template slot-scope="scope">
-          <el-tag v-if="scope.row.paid" :type="success" disable-transitions> Paid</el-tag>
-          <el-button v-else>Pay Tax</el-button>
+          <el-tag v-if="scope.row.paid" type="success" disable-transitions> Paid</el-tag>
+          <el-button v-else @click="payTax(scope.row)">Pay Tax</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -46,6 +46,15 @@ export default {
   methods: {
     hufFormat (row, col, val, index) {
       return val + ' Ft'
+    },
+    async payTax (tax) {
+      tax.paid = true
+      try {
+        const updated = await repo.update(tax)
+        this.$store.commit('TaxStore/updateTax', updated)
+      } catch (e) {
+        this.$message.warning(e.message)
+      }
     }
   }
 }
