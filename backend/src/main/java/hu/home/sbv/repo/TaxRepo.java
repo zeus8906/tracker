@@ -9,6 +9,6 @@ import java.util.List;
 
 public interface TaxRepo extends CrudRepository<Tax, Long> {
 
-    @Query("SELECT * FROM taxes WHERE rsu=:rsuId")
+    @Query("SELECT t FROM Tax t WHERE t.rsu=:rsuId")
     public List<Tax> findByRsuId(@Param("rsuId") long rsuId);
 }
