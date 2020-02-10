@@ -1,8 +1,6 @@
 package hu.home.sbv.controller;
 
-import hu.home.sbv.model.Rsu;
-import hu.home.sbv.model.TaxType;
-import hu.home.sbv.service.BaseService;
+import hu.home.sbv.model.*;
 import hu.home.sbv.service.RsuService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,5 +48,14 @@ public class RsuController {
     public @ResponseBody Rsu update(@RequestBody Rsu toUpdate){
         LOG.info("Updating RSU: {}", toUpdate);
         return service.update(toUpdate);
+    }
+
+    @PostMapping("/sell")
+    public @ResponseBody
+    SellResponseDto sell(@RequestBody SellTransactionRequest transaction){
+        LOG.info("Sell Action: {}", transaction);
+        final SellResponseDto sellResponse = service.sell(transaction);
+        service.createTaxesForSellTransaction(sellResponse);
+        return sellResponse;
     }
 }

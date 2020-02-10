@@ -1,7 +1,6 @@
 package hu.home.sbv.controller;
 
 import hu.home.sbv.repo.ArgsRepo;
-import org.h2.util.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,7 +20,7 @@ public class ArgsController {
     @GetMapping("/args/tax_base")
     public BigDecimal getTaxBase(){
         String queryResult = repo.getTaxBase();
-        if(StringUtils.isNullOrEmpty(queryResult)){
+        if(queryResult == null || queryResult.trim() == "") {
             return BigDecimal.ZERO;
         } else {
             return new BigDecimal(queryResult);
@@ -31,7 +30,7 @@ public class ArgsController {
     @PutMapping("/args/tax_base/{newVal}")
     public BigDecimal updateTaxBase(@PathVariable BigDecimal newVal){
         String queryResult = repo.getTaxBase();
-        if(StringUtils.isNullOrEmpty(queryResult)){
+        if(queryResult == null || queryResult.trim() == "") {
             repo.createTaxBase(newVal.toString());
         } else {
             repo.updateTaxBase(newVal.toString());

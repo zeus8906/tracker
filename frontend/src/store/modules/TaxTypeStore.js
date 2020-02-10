@@ -3,7 +3,8 @@ export const state = {
 }
 
 export const getters = {
-  getTaxTypes: state => state.taxTypes
+  getTaxTypes: state => state.taxTypes,
+  getTaxTypesOnSell: state => state.taxTypes.filter(type => type.onSell)
 }
 
 export const mutations = {

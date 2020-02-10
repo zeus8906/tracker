@@ -3,8 +3,7 @@ package hu.home.sbv.model;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
-import java.util.Date;
-import java.util.HashMap;
+import java.sql.Date;
 
 @Entity
 @Table(name="rsu_sells")
@@ -89,4 +88,5 @@ public class RsuSell {
         sb.append('}');
         return sb.toString();
     }
+
 }

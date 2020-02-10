@@ -76,7 +76,7 @@ public class TaxService extends BaseService<Tax, Long> {
     }
 
     private Tax add(Tax toAdd, boolean isSellTax){
-        toAdd.setDueDate(calculateDueDate(toAdd.getRsu().getSettleDate(), true));
+        toAdd.setDueDate(calculateDueDate(toAdd.getRsu().getSettleDate(), isSellTax));
         return super.add(toAdd);
     }
 

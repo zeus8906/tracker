@@ -2,6 +2,7 @@ package hu.home.sbv.model;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -49,5 +50,13 @@ public class RsuSellTransaction {
 
     public void setIncome(BigDecimal income) {
         this.income = income;
+    }
+
+    public void addItem(RsuSell item){
+        this.items.add(item);
+    }
+
+    public RsuSellTransaction() {
+        this.items = new ArrayList<>();
     }
 }

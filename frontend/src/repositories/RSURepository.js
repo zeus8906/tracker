@@ -18,5 +18,11 @@ export default {
   delete (payload) {
     return axios.delete(baseUrl + '/delete/' + payload)
       .then(response => true)
+  },
+  sell (payload) {
+    console.log('sending transaction...')
+    console.log(payload)
+    return axios.post(baseUrl + '/sell', payload)
+      .then(response => response.data)
   }
 }
